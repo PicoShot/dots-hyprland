@@ -24,7 +24,7 @@ Scope {
 
         WlrLayershell.namespace: "quickshell:overview"
         WlrLayershell.layer: WlrLayer.Top
-        WlrLayershell.keyboardFocus: GlobalStates.overviewOpen ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
+        WlrLayershell.keyboardFocus: GlobalStates.overviewOpen ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
         color: "transparent"
 
         mask: Region {
@@ -66,6 +66,18 @@ Scope {
             target: panelWindow.monitor
             function onActiveWorkspaceChanged() {
                 if (GlobalStates.overviewOpen && !panelWindow.searchingText) {
+                    focusRestoreTimer.restart();
+                }
+            }
+        }
+
+        Timer {
+            id: focusRestoreTimer
+            interval: 50
+                onTriggered: {
+                if (GlobalStates.overviewOpen) {
+                    GlobalFocusGrab.removeDismissable(panelWindow);
+                    GlobalFocusGrab.addDismissable(panelWindow);
                     columnLayout.forceActiveFocus();
                 }
             }
