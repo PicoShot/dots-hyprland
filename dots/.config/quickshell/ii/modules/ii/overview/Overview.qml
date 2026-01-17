@@ -24,7 +24,7 @@ Scope {
 
         WlrLayershell.namespace: "quickshell:overview"
         WlrLayershell.layer: WlrLayer.Top
-        // WlrLayershell.keyboardFocus: GlobalStates.overviewOpen ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
+        WlrLayershell.keyboardFocus: GlobalStates.overviewOpen ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
         color: "transparent"
 
         mask: Region {
@@ -50,6 +50,7 @@ Scope {
                         searchWidget.cancelSearch();
                     }
                     GlobalFocusGrab.addDismissable(panelWindow);
+                    searchWidget.focusSearchInput();
                 }
             }
         }
@@ -60,6 +61,16 @@ Scope {
                 GlobalStates.overviewOpen = false;
             }
         }
+
+        Connections {
+            target: panelWindow.monitor
+            function onActiveWorkspaceChanged() {
+                if (GlobalStates.overviewOpen && !panelWindow.searchingText) {
+                    columnLayout.forceActiveFocus();
+                }
+            }
+        }
+
         implicitWidth: columnLayout.implicitWidth
         implicitHeight: columnLayout.implicitHeight
 
@@ -71,6 +82,7 @@ Scope {
         Column {
             id: columnLayout
             visible: GlobalStates.overviewOpen
+            focus: true
             anchors {
                 horizontalCenter: parent.horizontalCenter
                 top: parent.top

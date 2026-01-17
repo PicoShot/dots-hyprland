@@ -12,6 +12,7 @@ import Quickshell.Io
 
 MouseArea {
     id: root
+    focus: true
     property int columns: 4
     property real previewCellAspectRatio: 4 / 3
     property bool useDarkMode: Appearance.m3colors.darkmode
@@ -410,7 +411,7 @@ MouseArea {
         target: GlobalStates
         function onWallpaperSelectorOpenChanged() {
             if (GlobalStates.wallpaperSelectorOpen && monitorIsFocused) {
-                filterField.forceActiveFocus();
+                root.forceActiveFocus();
             }
         }
     }

@@ -116,6 +116,8 @@ Item {
             if (!visible) {
                 todoInput.text = ""
                 fabButton.focus = true
+            } else {
+                todoInput.forceActiveFocus()
             }
         }
 
@@ -126,12 +128,12 @@ Item {
             MouseArea {
                 hoverEnabled: true
                 anchors.fill: parent
-                preventStealing: true
-                propagateComposedEvents: false
+                onClicked: root.showAddDialog = false
             }
         }
 
         Rectangle { // The dialog
+            z: 1
             id: dialog
             anchors.left: parent.left
             anchors.right: parent.right
