@@ -43,15 +43,14 @@ RippleButton {
             visible: root.buttonText?.length > 0
             active: true
             sourceComponent: Revealer {
-                visible: root.expanded || implicitWidth > 0
                 reveal: root.expanded
-                implicitWidth: reveal ? (buttonText.implicitWidth + root.elementSpacing + contentRowLayout.horizontalMargins) : 0
+                width: reveal ? (buttonText.implicitWidth + root.elementSpacing + contentRowLayout.horizontalMargins) : 0
+                height: buttonText.implicitHeight
                 StyledText {
                     id: buttonText
                     anchors {
                         left: parent.left
                         leftMargin: root.elementSpacing
-                        verticalCenter: parent.verticalCenter
                     }
                     text: root.buttonText
                     color: Appearance.colors.colOnPrimaryContainer
