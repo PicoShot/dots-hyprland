@@ -24,12 +24,8 @@ Scope {
 
         WlrLayershell.namespace: "quickshell:overview"
         WlrLayershell.layer: WlrLayer.Top
-        WlrLayershell.keyboardFocus: GlobalStates.overviewOpen ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
+        WlrLayershell.keyboardFocus: GlobalStates.overviewOpen ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
         color: "transparent"
-
-        mask: Region {
-            item: GlobalStates.overviewOpen ? columnLayout : null
-        }
 
         anchors {
             top: true
@@ -44,41 +40,11 @@ Scope {
                 if (!GlobalStates.overviewOpen) {
                     searchWidget.disableExpandAnimation();
                     overviewScope.dontAutoCancelSearch = false;
-                    GlobalFocusGrab.dismiss();
                 } else {
                     if (!overviewScope.dontAutoCancelSearch) {
                         searchWidget.cancelSearch();
                     }
-                    GlobalFocusGrab.addDismissable(panelWindow);
                     searchWidget.focusSearchInput();
-                }
-            }
-        }
-
-        Connections {
-            target: GlobalFocusGrab
-            function onDismissed() {
-                GlobalStates.overviewOpen = false;
-            }
-        }
-
-        Connections {
-            target: panelWindow.monitor
-            function onActiveWorkspaceChanged() {
-                if (GlobalStates.overviewOpen && !panelWindow.searchingText) {
-                    focusRestoreTimer.restart();
-                }
-            }
-        }
-
-        Timer {
-            id: focusRestoreTimer
-            interval: 50
-                onTriggered: {
-                if (GlobalStates.overviewOpen) {
-                    GlobalFocusGrab.removeDismissable(panelWindow);
-                    GlobalFocusGrab.addDismissable(panelWindow);
-                    columnLayout.forceActiveFocus();
                 }
             }
         }
@@ -89,6 +55,12 @@ Scope {
         function setSearchingText(text) {
             searchWidget.setSearchingText(text);
             searchWidget.focusFirstItem();
+        }
+
+        // Click outside to close
+        MouseArea {
+            anchors.fill: parent
+            onClicked: GlobalStates.overviewOpen = false
         }
 
         Column {
