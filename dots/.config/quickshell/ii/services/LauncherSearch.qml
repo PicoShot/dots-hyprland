@@ -3,6 +3,7 @@ pragma Singleton
 import qs.modules.common
 import qs.modules.common.models
 import qs.modules.common.functions
+import qs
 import QtQuick
 import Qt.labs.folderlistmodel
 import Quickshell
