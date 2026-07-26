@@ -183,6 +183,11 @@ Item { // Bar content region
                     visible: (root.useShortenedForm < 2 && Battery.available)
                     Layout.alignment: Qt.AlignVCenter
                 }
+
+                OpenSeriesIndicator {
+                    visible: root.useShortenedForm < 2 && OpenSeries.available
+                    Layout.alignment: Qt.AlignVCenter
+                }
             }
         }
     }
