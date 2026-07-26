@@ -15,9 +15,9 @@ StyledPopup {
         return "devices_other";
     }
 
-    Row {
+    Column {
         anchors.centerIn: parent
-        spacing: 16
+        spacing: 12
 
         Repeater {
             model: OpenSeries.batteryDevices

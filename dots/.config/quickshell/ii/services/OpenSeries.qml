@@ -62,7 +62,7 @@ Singleton {
     }
 
     Timer {
-        interval: 30000
+        interval: 5000
         repeat: true
         running: root.installed
         onTriggered: root.refresh()
