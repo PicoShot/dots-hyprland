@@ -32,21 +32,19 @@ Singleton {
 
     Process {
         id: statusProcess
-        command: ["openseries", "status", "--json"]
+        command: ["openseries", "battery", "--json"]
 
         stdout: StdioCollector {
             onStreamFinished: {
                 try {
                     const devices = JSON.parse(text);
                     root.batteryDevices = devices
-                        .filter(device => device.battery
-                            && device.capabilities?.includes("BatteryStatus")
-                            && Number.isFinite(Number(device.battery.levelPercentage)))
+                        .filter(device => Number.isFinite(Number(device.levelPercentage)))
                         .map(device => ({
                             id: device.id,
                             model: device.model,
-                            percentage: Math.max(0, Math.min(100, Number(device.battery.levelPercentage))),
-                            chargingState: device.battery.chargingState ?? "Unknown"
+                            percentage: Math.max(0, Math.min(100, Number(device.levelPercentage))),
+                            chargingState: device.chargingState ?? "Unknown"
                         }));
                 } catch (error) {
                     console.warn(`[OpenSeries] Could not parse device status: ${error.message}`);
