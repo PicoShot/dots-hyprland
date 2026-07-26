@@ -23,7 +23,9 @@ StyledPopup {
             model: OpenSeries.batteryDevices
 
             Column {
+                id: deviceColumn
                 required property var modelData
+                readonly property bool disconnected: modelData.chargingState.toLowerCase() === "disconnected"
                 spacing: 8
 
                 StyledPopupHeaderRow {
@@ -35,13 +37,16 @@ StyledPopup {
                     spacing: 4
 
                     StyledPopupValueRow {
+                        visible: !deviceColumn.disconnected
                         icon: "battery_android_full"
                         label: Translation.tr("Battery")
                         value: `${Math.round(modelData.percentage)}%`
                     }
 
                     StyledPopupValueRow {
-                        icon: modelData.chargingState === "Charging" ? "bolt" : "power"
+                        icon: deviceColumn.disconnected
+                            ? "link_off"
+                            : modelData.chargingState === "Charging" ? "bolt" : "power"
                         label: Translation.tr("Status:")
                         value: modelData.chargingState
                     }
