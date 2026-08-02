@@ -10,7 +10,12 @@ MouseArea {
     implicitWidth: deviceRow.implicitWidth + 8
     implicitHeight: Appearance.sizes.barHeight
     hoverEnabled: !Config.options.bar.tooltips.clickToShow
-    acceptedButtons: Qt.NoButton
+    acceptedButtons: Qt.RightButton
+
+    onClicked: mouse => {
+        if (mouse.button === Qt.RightButton)
+            OpenSeries.refresh();
+    }
 
     function deviceIcon(model) {
         const name = model.toLowerCase();
