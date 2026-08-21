@@ -10,10 +10,10 @@ pkgname="$_prefix-$_pkgname-git"
 pkgver=0.1.0.r1
 pkgrel=8
 pkgdesc="$_pkgname-git pinned commit and extra deps for $_prefix"
-arch=(x86_64 aarch64)
+arch=(x86_64)
 url='https://git.outfoxxed.me/quickshell/quickshell'
-options=(!strip)
 license=('LGPL-3.0-only')
+options=('strip' '!debug')
 depends=(
   'cpptrace'
   'jemalloc'
@@ -26,7 +26,7 @@ depends=(
   'libxcb'
   'wayland'
   # NOTE: Below are custom dependencies of illogical-impulse
-  qt6-5compat 
+  qt6-5compat
   qt6-avif-image-plugin
   qt6-imageformats
   qt6-multimedia
@@ -46,6 +46,7 @@ makedepends=(
   'cli11'
   'cmake'
   'git'
+  'lld'
   'ninja'
   'qt6-shadertools'
   'spirv-tools'
@@ -64,11 +65,25 @@ sha256sums=('SKIP'
 
 build() {
   cd "$_pkgname"
+
+  export CC=clang
+  export CXX=clang++
+
+  export CFLAGS="-O3 -march=native -mtune=native -flto=full -fno-plt -ffunction-sections -fdata-sections -fno-semantic-interposition"
+  export CXXFLAGS="$CFLAGS"
+
+  export LDFLAGS="-flto=full -fuse-ld=lld -Wl,-O3 -Wl,--gc-sections -Wl,--icf=all"
+
   cmake -GNinja -B build \
-    -DCMAKE_BUILD_TYPE="RelWithDebInfo" \
+    -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr \
+    -DNO_PCH=ON \
+    -DCMAKE_C_FLAGS="$CFLAGS" \
+    -DCMAKE_CXX_FLAGS="$CXXFLAGS" \
+    -DCMAKE_EXE_LINKER_FLAGS="$LDFLAGS" \
+    -DCMAKE_SHARED_LINKER_FLAGS="$LDFLAGS" \
+    -DCMAKE_MODULE_LINKER_FLAGS="$LDFLAGS" \
     -DDISTRIBUTOR="AUR (package: quickshell-git)" \
-    -DDISTRIBUTOR_DEBUGINFO_AVAILABLE=NO \
     -DINSTALL_QML_PREFIX=lib/qt6/qml
 
   cmake --build build
